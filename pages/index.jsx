@@ -1,22 +1,40 @@
-import Image from "next/image";
 import React, { useState } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [outputText, setOutputText] = useState('');
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
       // Call your function with the file as a parameter
-      myFunction(file);
+      sendImageToServer(file);
     }
   };
 
-  const myFunction = (file) => {
-    // Do something with the file
-    console.log('Selected file:', file);
+  const sendImageToServer = async (file) => {
+    try {
+      console.log('Selected file:', file);
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('41.43.83.152:8000', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      // Assuming the server returns the output text in JSON format
+      setOutputText(data.output);
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error scenarios
+    }
   };
 
   return (
@@ -117,7 +135,7 @@ Upload a screenshot and solve any math problem instantly with MathGPT!
   </svg>
   <span className="sr-only">Loading...</span>
 </div>
-
+<p>{outputText}</p>
 </div>
 }
 </div>
