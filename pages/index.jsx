@@ -19,7 +19,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch('/api/upload-image/', {
+      const response = await fetch('/api/upload-image', {
         method: 'POST',
         body: formData
       });
